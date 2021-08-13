@@ -1,5 +1,12 @@
-// Next.js API route support: https://nextjs.org/docs/api-routes/introduction
+const db = require('../../db/models/index')
+const Users = db.users;
 
 export default function handler(req, res) {
-  res.status(200).json({ name: 'John Doe' })
+	Users.findAll()
+	.then(data => {
+		res.send(data);
+	})
+	.catch(err => {
+		res.status(500).send({message: err})
+	})
 }
