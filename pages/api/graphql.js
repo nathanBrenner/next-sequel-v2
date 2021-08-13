@@ -1,7 +1,8 @@
-import { ApolloServer } from 'apollo-server';
+// import { ApolloServer } from 'apollo-server';
+import { ApolloServer } from 'apollo-server-micro';
+import models from '../../db/models';
+import resolvers from '../../graphql/resolvers';
 import typeDefs from '../../graphql/schema';
-const resolvers = require('../../graphql/resolvers');
-const models = require('../../graphql/models');
 
 const server = new ApolloServer({
   typeDefs,
@@ -10,9 +11,30 @@ const server = new ApolloServer({
 });
 
 const serverStart = server.start()
-export const GRAPHQL_PATH = '/api/graphql';
-export default async function handler(req, res) {
-	await serverStart;
 
-	return server.createHandler({ path: GRAPHQL_PATH })(req, res);
+export default async function handler(req, res) {
+  res.setHeader('Access-Control-Allow-Credentials', 'true')
+  res.setHeader(
+    'Access-Control-Allow-Origin',
+    'https://studio.apollographql.com'
+  )
+  res.setHeader(
+    'Access-Control-Allow-Headers',
+    'Origin, X-Requested-With, Content-Type, Accept'
+  )
+  if (req.method === 'OPTIONS') {
+    res.end()
+    return false
+  }
+
+  await serverStart
+  await server.createHandler({
+    path: '/api/graphql',
+  })(req, res)
+}
+
+export const config = {
+  api: {
+    bodyParser: false,
+  },
 }

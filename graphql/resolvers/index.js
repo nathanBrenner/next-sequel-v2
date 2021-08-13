@@ -1,12 +1,13 @@
+const db = require('../../db/models/index')
+import { userResolvers } from './user';
+
 const resolvers = {
   Query: {
-    async user(root, { id }, { models }) {
-      return models.User.findById(id);
-    },
-    async users(root, args, { models }) {
-      return models.User.findAll();
-    },
+    ...userResolvers.queries
   },
+  Mutation: {
+    ...userResolvers.mutations
+  }
 };
 
-module.exports = resolvers;
+export default resolvers;
