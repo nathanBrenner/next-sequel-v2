@@ -9,7 +9,6 @@ const config = require(__dirname + '/../config/config.js')[env];
 const db = {};
 
 const models = `${process.cwd()}/db/models/` || __dirname;
-console.log({models, basename})
 
 let sequelize;
 if (config.use_env_variable) {
@@ -18,24 +17,9 @@ if (config.use_env_variable) {
   sequelize = new Sequelize(config.database, config.username, config.password, config);
 }
 
-// fs
-//   .readdirSync(models)
-//   .filter(file => {
-//     return (file.indexOf('.') !== 0) && (file !== basename) && (file.slice(-3) === '.js');
-//   })
-//   .forEach(file => {
-//     console.log(file)
-//     const model = require(path.join(__dirname, file))(sequelize, Sequelize.DataTypes);
-//     db[model.name] = model;
-//   });
-
-// Object.keys(db).forEach(modelName => {
-//   if (db[modelName].associate) {
-//     db[modelName].associate(db);
-//   }
-// });
-
-db.users = require("./user.js")(sequelize, Sequelize);
+fs.readdirSync(models).filter(file => file !== 'index.js').forEach(file => {
+  db[file.slice(0, -3)] = require(`./${file}`)(sequelize, Sequelize)
+})
 
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;

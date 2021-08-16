@@ -1,12 +1,16 @@
 const db = require('../../db/models/index')
+import { profileResolvers } from './profile';
 import { userResolvers } from './user';
 
 const resolvers = {
   Query: {
-    ...userResolvers.queries
+    ...userResolvers.queries,
+    ...profileResolvers.queries
+    
   },
   Mutation: {
-    ...userResolvers.mutations
+    ...userResolvers.mutations, 
+    ...profileResolvers.mutations,
   }
 };
 
